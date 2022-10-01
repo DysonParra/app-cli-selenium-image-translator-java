@@ -72,6 +72,7 @@ public class TranslateProcessor {
      * @return
      */
     public static boolean getTranslatedImage(@NonNull WebDriver driver, @NonNull Map<String, String> flagsMap) {
+        boolean result = true;
         try {
             String outputPath = flagsMap.get("-outputPath");
             String targetLocaleLanguage = flagsMap.get("-targetLocaleLanguage");
@@ -129,8 +130,10 @@ public class TranslateProcessor {
             if (foundLocaleLanguage)
                 System.out.println("Target locale language: '" + targetLocaleLanguage + "' found.");
             else {
-                System.out.println("Target locale language: '" + targetLocaleLanguage + "' not found.");
-                return false;
+                result = false;
+                String errMessage = "Target locale language: '" + targetLocaleLanguage + "' not found.";
+                System.out.println(errMessage);
+                throw new Exception(errMessage);
             }
             Thread.sleep(2000);
 
@@ -146,10 +149,11 @@ public class TranslateProcessor {
             WebElement translatedImageDiv = driver.findElement(By.className("IDvEJb"));
             SeleniumScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, outputPath, screenshotsBaseName + "-" + String.format("%03d", ++translatedQuantity));
         } catch (Exception e) {
-            System.out.println("Error processing page.");
-            e.printStackTrace(System.out);
+            result = false;
+            System.out.println("Error translating image.");
+            //e.printStackTrace(System.out);
         }
-        return true;
+        return result;
     }
 
     /**
