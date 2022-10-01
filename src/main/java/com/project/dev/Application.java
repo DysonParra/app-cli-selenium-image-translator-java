@@ -34,7 +34,7 @@ public class Application {
             "res\\chromedriver.exe",
             "-urlsFilePath",
             "res\\urls.xml",
-            //"-imagesDir",
+            //"-inputPath",
             //"res\\input",
             "-outputPath",
             "res\\output",
@@ -50,7 +50,7 @@ public class Application {
         System.out.println("\n...START...");
         String requiredFlags[][] = {
             {"-chromeDriverPath"},
-            {"-urlsFilePath", "-imagesDir"},
+            {"-urlsFilePath", "-inputPath"},
             {"-outputPath"}
         };
 

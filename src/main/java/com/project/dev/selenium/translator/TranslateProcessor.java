@@ -21,8 +21,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -41,7 +44,11 @@ import org.openqa.selenium.devtools.DevTools;
 @Data
 public class TranslateProcessor {
 
+    @Getter(AccessLevel.PUBLIC)
+    @Setter(AccessLevel.PUBLIC)
     private static String screenshotsBaseName = "screenshot";
+    @Getter(AccessLevel.PUBLIC)
+    @Setter(AccessLevel.PUBLIC)
     private static int translatedQuantity = 0;
 
     /**
@@ -159,7 +166,7 @@ public class TranslateProcessor {
         String outputPath = flagsMap.get("-outputPath");
         String chromeUserDataDir = System.getProperty("user.home") + "\\AppData\\Local\\Google\\Chrome\\User Data";
         String chromeProfileDir = flagsMap.get("-chromeProfileDir");
-        String imagesDir = flagsMap.get("-imagesDir");
+        String inputPath = flagsMap.get("-inputPath");
         String urlsFilePath = flagsMap.get("-urlsFilePath");
         String targetLocaleLanguage = "es";
 
@@ -184,8 +191,8 @@ public class TranslateProcessor {
         } else if (!FileProcessor.validatePath(chromeUserDataDir)) {
             System.out.println("Invalid path in flag '-chromeUserDataDir'");
             result = false;
-        } else if (imagesDir != null && !FileProcessor.validatePath(imagesDir)) {
-            System.out.println("Invalid file in flag '-imagesDir'");
+        } else if (inputPath != null && !FileProcessor.validatePath(inputPath)) {
+            System.out.println("Invalid path in flag '-inputPath'");
             result = false;
         } else if (urlsFilePath != null && !FileProcessor.validateFile(urlsFilePath)) {
             System.out.println("Invalid file in flag '-urlsFilePath'");
