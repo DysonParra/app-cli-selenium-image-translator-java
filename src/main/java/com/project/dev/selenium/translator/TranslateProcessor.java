@@ -17,8 +17,18 @@ import com.project.dev.flag.processor.Flag;
 import com.project.dev.flag.processor.FlagMap;
 import com.project.dev.selenium.generic.SeleniumProcessor;
 import com.project.dev.selenium.generic.SeleniumScreenshot;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
@@ -34,6 +44,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * TODO: Definición de {@code TranslateProcessor}.
@@ -65,6 +76,36 @@ public class TranslateProcessor {
     }
 
     /**
+     * TODO: Definición de {@code addUrlToFile}.
+     *
+     * @param filePath
+     * @param imagePath
+     * @param url
+     */
+    public static void addUrlToFile(@NonNull String filePath, @NonNull String imagePath, @NonNull String url) {
+        try ( FileOutputStream fos = new FileOutputStream(filePath, true);
+                 OutputStreamWriter osr = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+                 BufferedWriter writer = new BufferedWriter(osr);) {
+            StringBuilder spacesBuilder = new StringBuilder();
+            for (int i = 0; i < (111 - imagePath.length()); i++)
+                spacesBuilder.append(" ");
+
+            writer.write(new StringBuilder()
+                    .append("\"")
+                    .append(imagePath)
+                    .append("\"")
+                    .append(spacesBuilder.toString())
+                    .append(" \"")
+                    .append(url)
+                    .append("\"\n")
+                    .toString());
+
+        } catch (Exception e) {
+            System.out.println("Could not write in file.");
+        }
+    }
+
+    /**
      * TODO: Definición de {@code getTranslatedImage}.
      *
      * @param driver
@@ -75,6 +116,9 @@ public class TranslateProcessor {
         boolean result = true;
         try {
             String outputPath = flagsMap.get("-outputPath");
+            String fileName = flagsMap.get("-fileName");
+            String subPaths = flagsMap.get("-subPaths");
+            String fullOutputPath = (subPaths == null) ? outputPath : outputPath + subPaths;
             String targetLocaleLanguage = flagsMap.get("-targetLocaleLanguage");
             JavascriptExecutor js = (JavascriptExecutor) driver;
 
@@ -147,7 +191,12 @@ public class TranslateProcessor {
                     + "wordsPanel.remove();");
 
             WebElement translatedImageDiv = driver.findElement(By.className("IDvEJb"));
-            SeleniumScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, outputPath, screenshotsBaseName + "-" + String.format("%03d", ++translatedQuantity));
+            if (fileName == null)
+                SeleniumScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, fullOutputPath,
+                        screenshotsBaseName + "-" + String.format("%03d", ++translatedQuantity));
+            else
+                SeleniumScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, fullOutputPath,
+                        fileName);
         } catch (Exception e) {
             result = false;
             System.out.println("Error translating image.");
@@ -157,13 +206,120 @@ public class TranslateProcessor {
     }
 
     /**
+     * TODO: Definición de {@code processImageInGoogleLens}.
+     *
+     * @param driver
+     * @param flagsMap
+     * @return
+     */
+    public static boolean processImageInGoogleLens(@NonNull WebDriver driver, @NonNull Map<String, String> flagsMap) {
+        boolean result = true;
+        try {
+            Integer loadPageTimeOut = Integer.parseInt(flagsMap.get("-loadPageTimeOut"));
+            Integer uploadImageTimeOut = Integer.parseInt(flagsMap.get("-uploadImageTimeOut"));
+            String inputPath = flagsMap.get("-inputPath");
+            String outputPath = flagsMap.get("-outputPath");
+            String inputFile = flagsMap.get("-inputFilePath");
+            File input = new File(inputFile);
+            String fullInputPath = input.getParent();
+            String fullOutputPath = fullInputPath.replace(inputPath, outputPath);
+            String subPaths = fullInputPath.replace(inputPath, "");
+
+            String fileName = input.getName();
+            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+            String outputFile = fullOutputPath + "\\" + fileName;
+            String inputFileAbs = input.getAbsolutePath();
+            flagsMap.put("-fileName", fileName);
+            flagsMap.put("-subPaths", subPaths);
+            String translatedUrl = "";
+
+            //System.out.println("In Path:        " + inputPath);
+            //System.out.println("Out Path:       " + outputPath);
+            //System.out.println("SubPaths:       " + subPaths);
+            //System.out.println("Full In Path:   " + fullInputPath);
+            //System.out.println("Full Out Path:  " + fullOutputPath);
+            //System.out.println("Name:           " + fileName);
+            //System.out.println("In File:        " + inputFile);
+            //System.out.println("Out File:       " + outputFile + ".png");
+            //System.out.println("In Abs:         " + inputFileAbs);
+            //if (result)
+            //    return true;
+            try {
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                js.executeScript("var lensButton = document.getElementById('R5mgy');"
+                        + "lensButton.click();");
+
+                WebElement uploadButton = driver.findElement(By.className("DV7the"));
+                uploadButton.click();
+                Thread.sleep(1000);
+                driver.manage().timeouts().pageLoadTimeout(Duration.ofMillis(uploadImageTimeOut));
+
+                driver.switchTo().activeElement();
+                StringSelection clipboard = new StringSelection(inputFileAbs);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboard, null);
+                Robot robot = new Robot();
+                robot.keyPress(KeyEvent.VK_CONTROL);
+                robot.keyPress(KeyEvent.VK_V);
+                robot.keyRelease(KeyEvent.VK_CONTROL);
+                robot.keyRelease(KeyEvent.VK_V);
+                robot.keyPress(KeyEvent.VK_ENTER);
+                robot.keyRelease(KeyEvent.VK_ENTER);
+
+                try {
+                    new WebDriverWait(driver, Duration.ofMillis(uploadImageTimeOut))
+                            .until((WebDriver webDriver) -> ((JavascriptExecutor) webDriver)
+                            .executeScript("var errorPanel = document.getElementsByClassName('alTBQe')[0];"
+                                    + "return (errorPanel == undefined && document.readyState == 'complete') "
+                                    + "|| errorPanel.style.display != 'none';")
+                            );
+                    try {
+                        driver.findElement(By.className("alTBQe"));
+                        String errMessage = "Invalid image format or size more that 20MB.";
+                        System.out.println(errMessage);
+                        throw new Exception(errMessage);
+                    } catch (org.openqa.selenium.NoSuchElementException pageChanged) {
+                        File outFile = new File(outputFile);
+                        outFile.getParentFile().mkdirs();
+                        Thread.sleep(100);
+                        result = getTranslatedImage(driver, flagsMap);
+                        if (result) {
+                            translatedUrl = driver.getCurrentUrl();
+                        } else {
+                            translatedUrl = "Error translating image.";
+                        }
+                    }
+                } catch (Exception e) {
+                    result = false;
+                    translatedUrl = "Error uploading image.";
+                    System.out.println(translatedUrl);
+                    //e.printStackTrace(System.out);
+                } finally {
+                    driver.manage().timeouts().pageLoadTimeout(Duration.ofMillis(loadPageTimeOut));
+                }
+            } catch (Exception e) {
+                translatedUrl = "Error processing image.";
+                System.out.println(translatedUrl);
+                //e.printStackTrace();
+            }
+            addUrlToFile(outputPath + "\\" + "output_urls.xml", inputFile, translatedUrl);
+        } catch (Exception e) {
+            System.out.println("Error getting flags of image.");
+            //e.printStackTrace();
+        }
+        System.out.println("End processing image.");
+        System.out.println(result);
+        return true;
+    }
+
+    /**
      * TODO: Definición de {@code processFlags}.
      *
      * @param flags
      * @return
      */
     public static boolean processFlags(Flag[] flags) {
-        boolean result;
+        boolean result = false;
 
         Map<String, String> flagsMap = FlagMap.convertFlagsArrayToMap(flags);
         String chromeDriverPath = flagsMap.get("-chromeDriverPath");
@@ -177,12 +333,14 @@ public class TranslateProcessor {
         int maxLoadPageTries = 3;
         int delayTimeBeforeRetry = 2000;
         int loadPageTimeOut = 10000;
+        int uploadImageTimeOut = 30000;
         int delayTimeBeforeNextPage = 200;
 
         chromeUserDataDir = FlagMap.validateFlagInMap(flagsMap, "-chromeUserDataDir", chromeUserDataDir, String.class);
         maxLoadPageTries = FlagMap.validateFlagInMap(flagsMap, "-maxLoadPageTries", maxLoadPageTries, Integer.class);
         delayTimeBeforeRetry = FlagMap.validateFlagInMap(flagsMap, "-delayTimeBeforeRetry", delayTimeBeforeRetry, Integer.class);
         loadPageTimeOut = FlagMap.validateFlagInMap(flagsMap, "-loadPageTimeOut", loadPageTimeOut, Integer.class);
+        FlagMap.validateFlagInMap(flagsMap, "-uploadImageTimeOut", uploadImageTimeOut, Integer.class);
         FlagMap.validateFlagInMap(flagsMap, "-delayTimeBeforeNextPage", delayTimeBeforeNextPage, Integer.class);
         FlagMap.validateFlagInMap(flagsMap, "-targetLocaleLanguage", targetLocaleLanguage, String.class);
 
@@ -203,13 +361,20 @@ public class TranslateProcessor {
             result = false;
         } else {
             List<String> urls = new ArrayList<>();
-            result = FileProcessor.forEachLine(urlsFilePath, TranslateProcessor::addUrlsToList, urls);
+            List<File> files = new ArrayList<>();
+            if (urlsFilePath != null) {
+                result = FileProcessor.forEachLine(urlsFilePath, TranslateProcessor::addUrlsToList, urls);
+                System.out.println("\nUrls:");
+                urls.forEach(url -> System.out.println(url));
+                System.out.println("");
+            } else if (inputPath != null) {
+                FileProcessor.getFiles(new File(inputPath), new String[]{".jpg", ".png", ".webp"}, files);
+                System.out.println("\nFiles:");
+                files.forEach(file -> System.out.println(file));
+                System.out.println("");
+            }
 
-            System.out.println("\nUrls:");
-            urls.forEach(url -> System.out.println(url));
-            System.out.println("");
-
-            if (!urls.isEmpty()) {
+            if (!urls.isEmpty() || !files.isEmpty()) {
                 System.setProperty("webdriver.chrome.driver", chromeDriverPath);
                 ChromeOptions options = new ChromeOptions();
                 options.addArguments("user-data-dir=" + chromeUserDataDir);
@@ -223,10 +388,21 @@ public class TranslateProcessor {
                 devTools.createSession();
                 devTools.send(new Command<>("Network.enable", ImmutableMap.of()));
 
-                result = SeleniumProcessor.forEachPage(driver, urls, maxLoadPageTries,
-                        delayTimeBeforeRetry, loadPageTimeOut, TranslateProcessor::getTranslatedImage,
-                        flagsMap);
-
+                if (inputPath != null) {
+                    List<String> uploadPage = Arrays.asList("https://www.google.com.co/search?q=google&tbm=isch");
+                    for (File file : files) {
+                        flagsMap.put("-inputFilePath", file.toString());
+                        result = SeleniumProcessor.forEachPage(driver, uploadPage, maxLoadPageTries,
+                                delayTimeBeforeRetry, loadPageTimeOut, TranslateProcessor::processImageInGoogleLens,
+                                flagsMap);
+                        if (!result)
+                            break;
+                    }
+                } else if (urlsFilePath != null) {
+                    result = SeleniumProcessor.forEachPage(driver, urls, maxLoadPageTries,
+                            delayTimeBeforeRetry, loadPageTimeOut, TranslateProcessor::getTranslatedImage,
+                            flagsMap);
+                }
                 System.out.println("Finish processing pages...");
                 driver.quit();
             }
