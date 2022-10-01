@@ -14,13 +14,13 @@ package com.project.dev.translator;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.project.dev.flag.processor.Flag;
+import com.project.dev.flag.processor.FlagMap;
 import com.project.dev.generic.processor.FileProcessor;
 import com.project.dev.generic.processor.SeleniumProcessor;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -62,43 +62,6 @@ public class TranslateProcessor {
         if (line.matches("(http://|https://)(lens.google.com).*?"))
             list.add(line);
         return true;
-    }
-
-    /**
-     * TODO: Definición de {@code validateFlagInMap}.
-     *
-     * @param <T>
-     * @param flagsMap
-     * @param flagName
-     * @param defaultValue
-     * @param classType
-     * @return
-     */
-    public static <T> T validateFlagInMap(Map<String, String> flagsMap,
-            String flagName, T defaultValue, Class<T> classType) {
-        boolean validFlag = false;
-        T resultValue = null;
-        String flagValue = flagsMap.get(flagName);
-        if (flagValue != null) {
-            try {
-                resultValue = classType.getConstructor(String.class).newInstance(flagValue);
-                validFlag = true;
-            } catch (Exception e) {
-                System.out.printf("Invalid value '%s' for flag '%s'.\n", flagValue, flagName);
-                //e.printStackTrace(System.out);
-            }
-        }
-        if (!validFlag) {
-            try {
-                resultValue = defaultValue;
-                String defaultFlag = String.valueOf(defaultValue);
-                System.out.printf("Using default value '%s' in flag '%s'.\n", defaultFlag, flagName);
-                flagsMap.put(flagName, defaultFlag);
-            } catch (Exception e) {
-                //e.printStackTrace(System.out);
-            }
-        }
-        return resultValue;
     }
 
     /**
@@ -305,9 +268,7 @@ public class TranslateProcessor {
     public static boolean processFlags(Flag[] flags) {
         boolean result;
 
-        Map<String, String> flagsMap = new HashMap<>();
-        for (Flag aux : flags)
-            flagsMap.put(aux.getName(), aux.getValue() == null ? "" : aux.getValue());
+        Map<String, String> flagsMap = FlagMap.convertFlagsArrayToMap(flags);
         String chromeDriverPath = flagsMap.get("-chromeDriverPath");
         String outputPath = flagsMap.get("-outputPath");
         String chromeUserDataDir = System.getProperty("user.home") + "\\AppData\\Local\\Google\\Chrome\\User Data";
@@ -321,12 +282,12 @@ public class TranslateProcessor {
         int loadPageTimeOut = 10000;
         int delayTimeBeforeNextPage = 200;
 
-        chromeUserDataDir = validateFlagInMap(flagsMap, "-chromeUserDataDir", chromeUserDataDir, String.class);
-        maxLoadPageTries = validateFlagInMap(flagsMap, "-maxLoadPageTries", maxLoadPageTries, Integer.class);
-        delayTimeBeforeRetry = validateFlagInMap(flagsMap, "-delayTimeBeforeRetry", delayTimeBeforeRetry, Integer.class);
-        loadPageTimeOut = validateFlagInMap(flagsMap, "-loadPageTimeOut", loadPageTimeOut, Integer.class);
-        validateFlagInMap(flagsMap, "-delayTimeBeforeNextPage", delayTimeBeforeNextPage, Integer.class);
-        validateFlagInMap(flagsMap, "-targetLocaleLanguage", targetLocaleLanguage, String.class);
+        chromeUserDataDir = FlagMap.validateFlagInMap(flagsMap, "-chromeUserDataDir", chromeUserDataDir, String.class);
+        maxLoadPageTries = FlagMap.validateFlagInMap(flagsMap, "-maxLoadPageTries", maxLoadPageTries, Integer.class);
+        delayTimeBeforeRetry = FlagMap.validateFlagInMap(flagsMap, "-delayTimeBeforeRetry", delayTimeBeforeRetry, Integer.class);
+        loadPageTimeOut = FlagMap.validateFlagInMap(flagsMap, "-loadPageTimeOut", loadPageTimeOut, Integer.class);
+        FlagMap.validateFlagInMap(flagsMap, "-delayTimeBeforeNextPage", delayTimeBeforeNextPage, Integer.class);
+        FlagMap.validateFlagInMap(flagsMap, "-targetLocaleLanguage", targetLocaleLanguage, String.class);
 
         if (!FileProcessor.validateFile(chromeDriverPath)) {
             System.out.println("Invalid file in flag '-chromeDriverPath'");
