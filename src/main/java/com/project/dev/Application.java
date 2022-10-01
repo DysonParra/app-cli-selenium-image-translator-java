@@ -11,9 +11,9 @@
  */
 package com.project.dev;
 
-import com.project.dev.translator.TranslateProcessor;
 import com.project.dev.flag.processor.Flag;
 import com.project.dev.flag.processor.FlagProcessor;
+import com.project.dev.selenium.translator.TranslateProcessor;
 
 /**
  * TODO: Definición de {@code Application}.

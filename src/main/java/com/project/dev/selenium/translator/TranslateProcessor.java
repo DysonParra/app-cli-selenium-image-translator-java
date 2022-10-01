@@ -9,7 +9,7 @@
  * @history v1.0 --- La implementacion de {TranslateProcessor} fue realizada el 14/08/2022.
  * @dev - La primera version de {TranslateProcessor} fue escrita por Dyson A. Parra T.
  */
-package com.project.dev.translator;
+package com.project.dev.selenium.translator;
 
 import com.google.common.collect.ImmutableMap;
 import com.project.dev.flag.processor.Flag;

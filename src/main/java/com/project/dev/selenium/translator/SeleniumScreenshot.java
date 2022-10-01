@@ -9,7 +9,7 @@
  * @history v1.0 --- La implementacion de {SeleniumScreenshot} fue realizada el 30/09/2022.
  * @dev - La primera version de {SeleniumScreenshot} fue escrita por Dyson A. Parra T.
  */
-package com.project.dev.translator;
+package com.project.dev.selenium.translator;
 
 import com.google.common.io.Files;
 import java.awt.Graphics;
