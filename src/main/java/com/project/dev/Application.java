@@ -73,13 +73,7 @@ public class Application {
         // for (String arg : args)
         //     System.out.println(arg);
         Flag[] flags;
-        if (args.length != 0) {
-            System.out.println("Validating specified flags...");
-            flags = FlagProcessor.validateFlags(args, requiredFlags, optionalFlags, false);
-        } else {
-            System.out.println("No flags specified, validating default flags...");
-            flags = FlagProcessor.validateFlags(defaultArgs, requiredFlags, optionalFlags, false);
-        }
+        flags = FlagProcessor.convertArgsToFlags(args, defaultArgs, requiredFlags, optionalFlags, false);
         if (flags == null) {
             System.out.println("...ERROR IN FLAGS...");
             return;
