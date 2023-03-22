@@ -1,5 +1,5 @@
 /*
- * @fileoverview    {TranslateProcessor} se encarga de realizar tareas específicas.
+ * @fileoverview    {TranslateProcessor}
  *
  * @version         2.0
  *
