@@ -19,7 +19,7 @@ import com.project.dev.file.generic.FileProcessor;
 import com.project.dev.flag.processor.Flag;
 import com.project.dev.flag.processor.FlagMap;
 import com.project.dev.selenium.generic.SeleniumProcessor;
-import com.project.dev.selenium.generic.SeleniumScreenshot;
+import com.project.dev.selenium.generic.struct.action.NodeScreenshot;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -195,10 +195,10 @@ public class TranslateProcessor {
 
             WebElement translatedImageDiv = driver.findElement(By.className("IDvEJb"));
             if (fileName == null)
-                SeleniumScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, fullOutputPath,
+                NodeScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, fullOutputPath,
                         screenshotsBaseName + "-" + String.format("%03d", ++translatedQuantity));
             else
-                SeleniumScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, fullOutputPath,
+                NodeScreenshot.getFullNodeScreenshot(driver, translatedImageDiv, fullOutputPath,
                         fileName);
         } catch (Exception e) {
             result = false;
