@@ -50,7 +50,7 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * TODO: Definición de {@code TranslateProcessor}.
+ * TODO: Description of {@code TranslateProcessor}.
  *
  * @author Dyson Parra
  * @since 11
@@ -66,7 +66,7 @@ public class TranslateProcessor {
     private static int translatedQuantity = 0;
 
     /**
-     * TODO: Definición de {@code addUrlsToList}.
+     * TODO: Description of {@code addUrlsToList}.
      *
      * @param line
      * @param list
@@ -79,7 +79,7 @@ public class TranslateProcessor {
     }
 
     /**
-     * TODO: Definición de {@code addUrlToFile}.
+     * TODO: Description of {@code addUrlToFile}.
      *
      * @param filePath
      * @param imagePath
@@ -109,7 +109,7 @@ public class TranslateProcessor {
     }
 
     /**
-     * TODO: Definición de {@code getTranslatedImage}.
+     * TODO: Description of {@code getTranslatedImage}.
      *
      * @param driver
      * @param flagsMap
@@ -209,7 +209,7 @@ public class TranslateProcessor {
     }
 
     /**
-     * TODO: Definición de {@code processImageInGoogleLens}.
+     * TODO: Description of {@code processImageInGoogleLens}.
      *
      * @param driver
      * @param flagsMap
@@ -316,7 +316,7 @@ public class TranslateProcessor {
     }
 
     /**
-     * TODO: Definición de {@code processFlags}.
+     * TODO: Description of {@code processFlags}.
      *
      * @param flags
      * @return

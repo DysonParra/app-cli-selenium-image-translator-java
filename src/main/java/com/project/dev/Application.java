@@ -19,7 +19,7 @@ import com.project.dev.flag.processor.FlagProcessor;
 import com.project.dev.selenium.translator.TranslateProcessor;
 
 /**
- * TODO: Definición de {@code Application}.
+ * TODO: Description of {@code Application}.
  *
  * @author Dyson Parra
  * @since 11
