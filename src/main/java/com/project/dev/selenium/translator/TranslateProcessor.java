@@ -53,7 +53,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * TODO: Definición de {@code TranslateProcessor}.
  *
  * @author Dyson Parra
- * @since 1.8
+ * @since 11
  */
 @Data
 public class TranslateProcessor {
