@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableMap;
 import com.project.dev.file.generic.FileProcessor;
 import com.project.dev.flag.processor.Flag;
 import com.project.dev.flag.processor.FlagMap;
-import com.project.dev.selenium.generic.SeleniumProcessor;
+import com.project.dev.selenium.generic.processor.UrlProcessor;
 import com.project.dev.selenium.generic.struct.action.NodeScreenshot;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -395,14 +395,14 @@ public class TranslateProcessor {
                     List<String> uploadPage = Arrays.asList("https://www.google.com.co/search?q=google&tbm=isch");
                     for (File file : files) {
                         flagsMap.put("-inputFilePath", file.toString());
-                        result = SeleniumProcessor.forEachPage(driver, uploadPage, maxLoadPageTries,
+                        result = UrlProcessor.forEachPage(driver, uploadPage, maxLoadPageTries,
                                 delayTimeBeforeRetry, loadPageTimeOut, TranslateProcessor::processImageInGoogleLens,
                                 flagsMap);
                         if (!result)
                             break;
                     }
                 } else if (urlsFilePath != null) {
-                    result = SeleniumProcessor.forEachPage(driver, urls, maxLoadPageTries,
+                    result = UrlProcessor.forEachPage(driver, urls, maxLoadPageTries,
                             delayTimeBeforeRetry, loadPageTimeOut, TranslateProcessor::getTranslatedImage,
                             flagsMap);
                 }
