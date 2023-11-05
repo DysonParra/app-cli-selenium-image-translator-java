@@ -1,0 +1,155 @@
+{
+    "config": {
+        "delay-time-before-end": 3000,
+        "max-action-page-tries": 3,
+        "run-page-actions-for-each-file": false,
+        "allowed-file-extensions": [
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp"
+        ]
+    },
+    "pages": [
+        {
+            "url": "%urlsFilePath%",
+            "delay-time-before-next": 500,
+            "elements": [
+                {
+                    "id": null,
+                    "name": null,
+                    "xpath": "//body",
+                    "actions": [
+                        {
+                            "type": "script",
+                            "script": [
+                                "var imageDiv = document.getElementsByClassName('pXCGrf')[0];",
+                                "var originalImage = document.getElementsByTagName('img')[0];",
+                                "var url = originalImage.src;",
+                                "var img = new Image;",
+                                "img.onload = function() {",
+                                "imageDiv.style.width = img.width + 'px'; imageDiv.style.height = img.height + 'px';",
+                                "};",
+                                "img.src = url;"
+                            ],
+                            "delay-time-before-next": 100
+                        },
+                        {
+                            "type": "script",
+                            "script": [
+                                "var body = document.getElementsByTagName('body')[0];",
+                                "body.style['min-width'] ='5000px'; body.style['min-height'] = '5000px';",
+                                "var div = document.getElementsByClassName('aNrIN')[0];",
+                                "div.style['width'] ='5000px'; div.style['height'] = '5000px';"
+                            ],
+                            "delay-time-before-next": 100
+                        },
+                        {
+                            "type": "script",
+                            "script": [
+                                "var headerPanel = document.getElementsByClassName('pGxpHc')[0];",
+                                "headerPanel.remove();"
+                            ],
+                            "delay-time-before-next": 100
+                        },
+                        {
+                            "type": "script",
+                            "script": [
+                                "var textActionButton = document.getElementById('text').getElementsByTagName('button')[0];",
+                                "textActionButton.click();"
+                            ],
+                            "delay-time-before-next": 100
+                        },
+                        {
+                            "type": "script",
+                            "script": [
+                                "var translateActionButton = document.getElementById('translate').getElementsByTagName('button')[0];",
+                                "translateActionButton.click();"
+                            ],
+                            "delay-time-before-next": 100
+                        }
+                    ]
+                },
+                {
+                    "id": null,
+                    "name": null,
+                    "xpath": "//*[@id='target']//button",
+                    "actions": [
+                        {
+                            "type": "clic",
+                            "delay-time-before-next": 100
+                        }
+                    ]
+                },
+                {
+                    "id": null,
+                    "name": null,
+                    "xpath": "//li",
+                    "actions": [
+                        {
+                            "type": "script",
+                            "script": [
+                                "arguments[0].remove()"
+                            ],
+                            "delay-time-before-next": 100
+                        }
+                    ]
+                },
+                {
+                    "id": null,
+                    "name": null,
+                    "xpath": "//li[@data-locale='<TARGET_LOCALE_LANGUAGE>']",
+                    "actions": [
+                        {
+                            "type": "clic",
+                            "delay-time-before-next": 100
+                        }
+                    ]
+                },
+                {
+                    "id": null,
+                    "name": null,
+                    "xpath": "//body",
+                    "actions": [
+                        {
+                            "type": "script",
+                            "script": [
+                                "var translatePanel = document.getElementsByClassName('z3qvzf')[0];",
+                                "translatePanel.remove();"
+                            ],
+                            "delay-time-before-next": 100
+                        },
+                        {
+                            "type": "script",
+                            "script": [
+                                "var actionPanel = document.getElementsByClassName('SAvApe')[0];",
+                                "actionPanel.remove();"
+                            ],
+                            "delay-time-before-next": 100
+                        },
+                        {
+                            "type": "script",
+                            "script": [
+                                "var wordsPanel = document.getElementsByClassName('b57KQc')[0];",
+                                "wordsPanel.remove();"
+                            ],
+                            "delay-time-before-next": 100
+                        }
+                    ]
+                },
+                {
+                    "id": null,
+                    "name": null,
+                    "xpath": "//*[contains(@class,'pXCGrf')]",
+                    "actions": [
+                        {
+                            "type": "node-screenshot",
+                            "output-base-file-name": "<SCREENSHOT_BASE_NAME>",
+                            "delay-time-before-next": 1000
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

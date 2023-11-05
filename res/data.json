@@ -1,0 +1,5 @@
+{
+    "TARGET_LOCALE_LANGUAGE" : "es",
+    "OUTPUT_URL_FILE": "output_urls.xml",
+    "SCREENSHOT_BASE_NAME" : "Screenshot"
+}
