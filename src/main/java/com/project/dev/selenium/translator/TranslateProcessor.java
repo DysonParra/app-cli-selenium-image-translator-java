@@ -395,14 +395,14 @@ public class TranslateProcessor {
                     List<String> uploadPage = Arrays.asList("https://www.google.com.co/search?q=google&tbm=isch");
                     for (File file : files) {
                         flagsMap.put("-inputFilePath", file.toString());
-                        result = UrlProcessor.forEachPage(driver, uploadPage, maxLoadPageTries,
+                        result = UrlProcessor.forEachUrl(driver, uploadPage, maxLoadPageTries,
                                 delayTimeBeforeRetry, loadPageTimeOut, TranslateProcessor::processImageInGoogleLens,
                                 flagsMap);
                         if (!result)
                             break;
                     }
                 } else if (urlsFilePath != null) {
-                    result = UrlProcessor.forEachPage(driver, urls, maxLoadPageTries,
+                    result = UrlProcessor.forEachUrl(driver, urls, maxLoadPageTries,
                             delayTimeBeforeRetry, loadPageTimeOut, TranslateProcessor::getTranslatedImage,
                             flagsMap);
                 }
