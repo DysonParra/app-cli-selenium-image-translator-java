@@ -1,4 +1,7 @@
 
+var originalImage = document.getElementsByTagName('img')[0];
+originalImage.src = 'data:image/png;base64,%fileBase64%'
+
 var imageDiv = document.getElementsByClassName('pXCGrf')[0];
 var originalImage = document.getElementsByTagName('img')[0];
 var url = originalImage.src;
