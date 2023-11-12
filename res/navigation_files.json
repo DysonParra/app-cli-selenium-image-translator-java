@@ -10,8 +10,9 @@
             ".webp"
         ]
     },
-    "pages": [
+    "navigation": [
         {
+            "type": "page",
             "url": "https://www.google.com.co/search?q=google&tbm=isch",
             "delay-time-before-next": 500,
             "elements": [

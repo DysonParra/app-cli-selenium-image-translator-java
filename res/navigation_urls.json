@@ -10,8 +10,9 @@
             ".webp"
         ]
     },
-    "pages": [
+    "navigation": [
         {
+            "type": "page",
             "url": "%urlsFilePath%",
             "delay-time-before-next": 500,
             "elements": [
