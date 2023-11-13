@@ -17,6 +17,7 @@
             "delay-time-before-next": 500,
             "elements": [
                 {
+                    "type": "dom-element",
                     "id": null,
                     "name": null,
                     "xpath": "//body",
@@ -72,6 +73,7 @@
                     ]
                 },
                 {
+                    "type": "dom-element",
                     "id": null,
                     "name": null,
                     "xpath": "//*[@id='target']//button",
@@ -83,6 +85,7 @@
                     ]
                 },
                 {
+                    "type": "dom-element",
                     "id": null,
                     "name": null,
                     "xpath": "//li",
@@ -97,6 +100,7 @@
                     ]
                 },
                 {
+                    "type": "dom-element",
                     "id": null,
                     "name": null,
                     "xpath": "//li[@data-locale='<TARGET_LOCALE_LANGUAGE>']",
@@ -108,6 +112,7 @@
                     ]
                 },
                 {
+                    "type": "dom-element",
                     "id": null,
                     "name": null,
                     "xpath": "//body",
@@ -139,6 +144,7 @@
                     ]
                 },
                 {
+                    "type": "dom-element",
                     "id": null,
                     "name": null,
                     "xpath": "//*[contains(@class,'pXCGrf')]",
