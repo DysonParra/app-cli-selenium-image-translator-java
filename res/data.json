@@ -1,5 +1,6 @@
 {
     "TARGET_LOCALE_LANGUAGE" : "es",
-    "OUTPUT_URL_FILE": "output_urls.xml",
-    "SCREENSHOT_BASE_NAME" : "Screenshot"
+    "INPUT_PATH": "res\\input",
+    "OUTPUT_PATH": "res\\output",
+    "OUTPUT_URLS_FILE": "output_urls.xml"
 }
